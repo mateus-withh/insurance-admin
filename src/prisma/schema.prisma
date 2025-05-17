@@ -1,0 +1,59 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique
+  password String
+  role     Role   @default(CORRETOR)
+}
+
+enum Role {
+  ADMIN
+  CORRETOR
+}
+
+model Client {
+  id      Int    @id @default(autoincrement())
+  name    String
+  type    String
+  cpfCnpj String
+  cep     String
+  address String
+  phone   String
+  email   String
+
+  apolices Apolice[]
+}
+
+model Seguradora {
+  id      Int    @id @default(autoincrement())
+  name    String
+  cnpj    String
+  contact String
+  website String
+
+  apolices Apolice[]
+}
+
+model Apolice {
+  id            Int      @id @default(autoincrement())
+  clientId      Int
+  seguradoraId  Int
+  tipo          String
+  numeroApolice String
+  valor         Float
+  dataInicio    DateTime
+  dataFim       DateTime
+  status        String
+
+  client     Client     @relation(fields: [clientId], references: [id])
+  seguradora Seguradora @relation(fields: [seguradoraId], references: [id])
+}
