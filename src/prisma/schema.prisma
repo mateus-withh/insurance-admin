@@ -8,52 +8,64 @@ datasource db {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
-  name     String
-  email    String @unique
-  password String
-  role     Role   @default(CORRETOR)
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      Role     @default(CORRETOR)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  clientes  Cliente[]
 }
 
+model Cliente {
+  id       Int     @id @default(autoincrement())
+  nome     String
+  email    String   @unique
+  telefone String
+  cpf      String   @unique
+  cep      String
+  endereco String
+  cidade   String
+  estado   String
+
+  user     User    @relation(fields: [userId], references: [id])
+  userId   String 
+
+  apolices  Apolice[]
+}
+
+model Seguradora {
+  id        String   @id @default(uuid())
+  nome      String   @unique
+  cnpj      String   @unique
+  site      String?
+  telefone  String?
+  apolices  Apolice[]
+}
+
+model Apolice {
+  id              String      @id @default(uuid())
+  numero          String      @unique
+  status          ApoliceStatus
+  validadeInicio  DateTime
+  validadeFim     DateTime
+  premio          Float
+
+  clienteId       Int
+  seguradoraId    String
+
+  cliente         Cliente     @relation(fields: [clienteId], references: [id])
+  seguradora      Seguradora  @relation(fields: [seguradoraId], references: [id])
+}
 enum Role {
   ADMIN
   CORRETOR
 }
 
-model Client {
-  id      Int    @id @default(autoincrement())
-  name    String
-  type    String
-  cpfCnpj String
-  cep     String
-  address String
-  phone   String
-  email   String
-
-  apolices Apolice[]
-}
-
-model Seguradora {
-  id      Int    @id @default(autoincrement())
-  name    String
-  cnpj    String
-  contact String
-  website String
-
-  apolices Apolice[]
-}
-
-model Apolice {
-  id            Int      @id @default(autoincrement())
-  clientId      Int
-  seguradoraId  Int
-  tipo          String
-  numeroApolice String
-  valor         Float
-  dataInicio    DateTime
-  dataFim       DateTime
-  status        String
-
-  client     Client     @relation(fields: [clientId], references: [id])
-  seguradora Seguradora @relation(fields: [seguradoraId], references: [id])
+enum ApoliceStatus {
+  ATIVA
+  VENCIDA
+  CANCELADA
 }

@@ -8,6 +8,8 @@ CREATE TABLE "User" (
     "email" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "role" "Role" NOT NULL DEFAULT 'CORRETOR',
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
 );
@@ -60,3 +62,5 @@ ALTER TABLE "Apolice" ADD CONSTRAINT "Apolice_clientId_fkey" FOREIGN KEY ("clien
 
 -- AddForeignKey
 ALTER TABLE "Apolice" ADD CONSTRAINT "Apolice_seguradoraId_fkey" FOREIGN KEY ("seguradoraId") REFERENCES "Seguradora"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+INSERT INTO "User" (id, name, email, password) VALUES ('123e4567-e89b-12d3-a456-426614174000', 'Teste', 'teste@exemplo.com', 'senha123');
